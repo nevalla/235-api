@@ -2,6 +2,7 @@ package client
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 )
@@ -42,6 +43,7 @@ type Goalies struct {
 }
 
 func (c *StatsClient) GetPlayerStats() (Players, error) {
+	fmt.Println("Fetching player stats")
 	path := "/stats/rest/en/skater/summary?isAggregate=false&isGame=false&sort=%5B%7B%22property%22:%22points%22,%22direction%22:%22DESC%22%7D,%7B%22property%22:%22goals%22,%22direction%22:%22DESC%22%7D,%7B%22property%22:%22assists%22,%22direction%22:%22DESC%22%7D%5D&start=0&limit=50&factCayenneExp=gamesPlayed%3E=1&cayenneExp=active%3D1%20and%20gameTypeId=2%20and%20nationalityCode=%22FIN%22%20and%20seasonId%3C=20192020%20and%20seasonId%3E=20192020"
 	var players Players
 	body, err := c.get(path)
@@ -53,6 +55,7 @@ func (c *StatsClient) GetPlayerStats() (Players, error) {
 }
 
 func (c *StatsClient) GetGoalieStats() (Goalies, error) {
+	fmt.Println("Fetching goalie stats")
 	path := "/stats/rest/en/goalie/summary?isAggregate=false&isGame=false&sort=%5B%7B%22property%22:%22wins%22,%22direction%22:%22DESC%22%7D,%7B%22property%22:%22savePct%22,%22direction%22:%22DESC%22%7D%5D&start=0&limit=50&factCayenneExp=gamesPlayed%3E=1&cayenneExp=gameTypeId=2%20and%20nationalityCode=%22FIN%22%20and%20seasonId%3C=20192020%20and%20seasonId%3E=20192020"
 	var goalies Goalies
 	body, err := c.get(path)

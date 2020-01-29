@@ -2,6 +2,7 @@ package client
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"time"
@@ -55,6 +56,7 @@ func NewScheduleClient() ScheduleClient {
 }
 
 func (c *ScheduleClient) GetSchedule() (Schedule, error) {
+	fmt.Println("Fetching schedule")
 	path := "?date=2020-01-28&expand=schedule.teams,schedule.scoringplays"
 	var schedule Schedule
 	body, err := c.get(path)

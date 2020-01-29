@@ -16,14 +16,15 @@ type Response struct {
 	Goalies  []client.Goalie `json:"goalies"`
 }
 
+var ca = cache.New(1*time.Minute, 10*time.Minute)
+
 func main() {
 	e := echo.New()
 	e.GET("/", func(c echo.Context) error {
 
 		if x, found := fromCache("response"); found {
 			var cachedResponse *Response
-			fmt.Println("Found from cache")
-			cachedResponse = x.(*Response)
+			cachedResponse = x
 			return c.JSONPretty(http.StatusOK, &cachedResponse, "  ")
 		} else {
 			var response Response
@@ -51,18 +52,16 @@ func main() {
 	e.Logger.Fatal(e.Start(":1323"))
 }
 
-func fromCache(key string) (interface{}, bool) {
-	c := cache.New(1*time.Minute, 10*time.Minute)
-	var cachedResponse *Response
-	if x, found := c.Get("response"); found {
-		fmt.Println("Found from cache")
-		cachedResponse = x.(*Response)
-		return cachedResponse, found
+func fromCache(key string) (*Response, bool) {
+	var r *Response
+	if x, found := ca.Get("response"); found {
+		fmt.Println("Found response from cache")
+		r = x.(*Response)
+		return r, found
 	}
-	return cachedResponse, false
+	return r, false
 }
 
-func toCache(k string, x interface{}, d time.Duration) {
-	c := cache.New(1*time.Minute, 10*time.Minute)
-	c.Set("response", &x, d)
+func toCache(k string, x *Response, d time.Duration) {
+	ca.Set("response", x, d)
 }
