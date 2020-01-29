@@ -5,6 +5,10 @@
 *.so
 *.dylib
 
+*.bak
+
+235-api
+
 # Test binary, built with `go test -c`
 *.test
 
